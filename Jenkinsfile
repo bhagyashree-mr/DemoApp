@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', changelog: false, credentialsId: '3fc54da0-2bba-41d3-b114-f3b1ce85f079', poll: false, url: 'https://github.com/bhagyashree-mr/DemoApp.git'
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/bhagyashree-mr/DemoApp.git'
             }
         }
 
@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image
-                    def dockerImage = docker.build("DemoApp")
+                    def dockerImage = docker.build("DemoApp", "--network=host")
         
                     // Tag the Docker image
                     dockerImage.tag("latest")
@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     // Deploy the Docker image (you may push it to a registry)
-                    docker.withRegistry('https://docker.io', 'a8cd2ffd-8c57-4ee9-bc5f-e2442e1417aa') {
+                    docker.withRegistry('https://docker.io', 'dockerhub-login') {
                         // Push the Docker image
                         docker.image("DemoApp").push()
                     }
