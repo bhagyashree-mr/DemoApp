@@ -8,17 +8,18 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+       stage('Build Docker Image') {
             steps {
                 script {
                     // Build the Docker image
-                    def dockerImage = docker.build("DemoApp", "--network=host")
-        
+                    def dockerImage = docker.build("DemoApp", "--network=host .") // Add the build context (.)
+            
                     // Tag the Docker image
                     dockerImage.tag("latest")
                 }
             }
         }
+
 
         stage('Run Tests') {
             steps {
