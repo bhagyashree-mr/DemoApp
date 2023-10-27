@@ -107,7 +107,7 @@ tps://github.com/bhagyashree-mr/DemoApp.git'
             steps {
                 script {
                     // Change to the project directory
-                    dir('C:\\path\\to\\your\\project') {
+                    dir('C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\python') {
                         // Create and activate virtual environment
                         bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\python -m venv venv'
                         bat '.\\venv\\Scripts\\activate && echo Virtual environment activated'
