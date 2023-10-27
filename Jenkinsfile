@@ -20,13 +20,17 @@ pipeline {
             }
         }
 
-
         stage('Run Tests') {
             steps {
                 script {
-                    // Activate virtual environment and install dependencies
-                    //bat 'python -m venv venv'
-                    bat '.\\venv\\Scripts\\activate && pip install -r requirements.txt'
+                    // Print the current directory for debugging
+                    bat 'cd'
+
+                    // Activate virtual environment using absolute path
+                    bat 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\DemoAppPipeline\\venv\\Scripts\\activate && echo Virtual environment activated'
+
+                    // Install dependencies
+                    bat 'pip install -r requirements.txt'
 
                     // Run pytest
                     bat 'pytest tests'
@@ -68,7 +72,7 @@ pipeline {
             echo 'Pipeline failed!'
             emailext subject: 'Pipeline Failed',
                       body: 'The pipeline has failed. Please check the Jenkins console output for details.',
-                      to: 'pdacse80@gmail.com' // Add your recipient email address
+                      to: 'pdacse80@gmail.com@gmail.com' // Add your recipient email address
         }
     }
 }
