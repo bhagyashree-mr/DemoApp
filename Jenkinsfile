@@ -23,15 +23,13 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Print the current directory for debugging
-                    bat 'cd'
-
-                    // Activate virtual environment using absolute path
-                    bat 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\DemoAppPipeline\\venv\\Scripts\\activate && echo Virtual environment activated'
-
+                    // Create and activate virtual environment
+                    bat 'python -m venv venv'
+                    bat '.\\venv\\Scripts\\activate && echo Virtual environment activated'
+        
                     // Install dependencies
                     bat 'pip install -r requirements.txt'
-
+        
                     // Run pytest
                     bat 'pytest tests'
                 }
