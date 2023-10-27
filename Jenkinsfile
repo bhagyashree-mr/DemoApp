@@ -25,13 +25,13 @@ pipeline {
                 script {
                     // Create and activate virtual environment
                     bat 'python -m venv venv'
-                    bat '.\\venv\\Scripts\\activate && echo Virtual environment activated'
+                    bat 'call .\\venv\\Scripts\\activate && echo Virtual environment activated'
         
                     // Install dependencies
-                    bat 'pip install -r requirements.txt'
+                    bat '.\\venv\\Scripts\\python -m pip install -r requirements.txt'
         
                     // Run pytest
-                    bat 'pytest tests'
+                    bat '.\\venv\\Scripts\\python -m pytest tests'
                 }
             }
         }
@@ -52,7 +52,10 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container
-                    docker.image("demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
+                    def container = docker.image("demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
+   
+                    // Wait for the application to be ready (adjust the log message)
+                    container.waitForLog("Application started", 60)
                 }
             }
         }
@@ -70,7 +73,7 @@ pipeline {
             echo 'Pipeline failed!'
             emailext subject: 'Pipeline Failed',
                       body: 'The pipeline has failed. Please check the Jenkins console output for details.',
-                      to: 'pdacse80@gmail.com@gmail.com' // Add your recipient email address
+                      to: 'pdacse80@gmail.com' // Add your recipient email address
         }
     }
 }
