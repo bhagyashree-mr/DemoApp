@@ -24,12 +24,11 @@ pipeline {
             steps {
                 script {
                     // Activate virtual environment and install dependencies
-                    sh 'python -m venv venv'
-                    sh './venv/bin/activate' // Adjusted activation command
-                    sh 'pip install -r requirements.txt'
+                    bat 'python -m venv venv'
+                    bat '.\\venv\\Scripts\\activate && pip install -r requirements.txt'
 
                     // Run pytest
-                    sh 'pytest tests'
+                    bat 'pytest tests'
                 }
             }
         }
@@ -50,7 +49,7 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container
-                    docker.image("DemoApp:latest").run("--name DemoAppContainer -p 8080:8080 -d")
+                    docker.image("DemoApp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
                 }
             }
         }
