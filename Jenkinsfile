@@ -4,15 +4,15 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/bhagyashree-mr/DemoApp.git'
+                git branch: 'master', changelog: false, poll: false, url: 'https://github.com/bhagyashree-mr/DemoApp.git'
             }
         }
 
-       stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     // Build the Docker image
-                    def dockerImage = docker.build("DemoApp", "--network=host .") // Add the build context (.)
+                    def dockerImage = docker.build("demoapp", "--network=host .") // Add the build context (.)
             
                     // Tag the Docker image
                     dockerImage.tag("latest")
@@ -40,7 +40,7 @@ pipeline {
                     // Deploy the Docker image (you may push it to a registry)
                     docker.withRegistry('https://docker.io', 'dockerhub-login') {
                         // Push the Docker image
-                        docker.image("DemoApp").push()
+                        docker.image("demoapp").push()
                     }
                 }
             }
@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container
-                    docker.image("DemoApp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
+                    docker.image("demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
                 }
             }
         }
@@ -61,14 +61,14 @@ pipeline {
             echo 'Pipeline successful!'
             emailext subject: 'Pipeline Successful',
                       body: 'The pipeline has been successfully executed.',
-                      to: 'drishtichauhan151@gmail.com' // Add your recipient email address
+                      to: 'pdacse80@gmail.com' // Add your recipient email address
         }
 
         failure {
             echo 'Pipeline failed!'
             emailext subject: 'Pipeline Failed',
                       body: 'The pipeline has failed. Please check the Jenkins console output for details.',
-                      to: 'drishtichauhan151@gmail.com' // Add your recipient email address
+                      to: 'pdacse80@gmail.com' // Add your recipient email address
         }
     }
 }
