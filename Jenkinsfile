@@ -27,17 +27,18 @@ pipeline {
                     dir('C:\\path\\to\\your\\project') {
                         // Create and activate virtual environment
                         bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\python -m venv venv'
-                        bat 'call .\\venv\\Scripts\\activate && echo Virtual environment activated'
+                        bat '.\\venv\\Scripts\\activate && echo Virtual environment activated'
                 
                         // Install dependencies
-                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\venv\\Scripts\\pip install -r requirements.txt'
+                        bat '.\\venv\\Scripts\\pip install -r requirements.txt'
                 
                         // Run pytest using the full path to Python executable
-                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\venv\\Scripts\\pytest tests'
+                        bat '.\\venv\\Scripts\\pytest tests'
                     }
                 }
             }
         }
+
 
         stage('Deploy') {
             steps {
