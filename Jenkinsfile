@@ -19,26 +19,28 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Run Tests') {
-    steps {
-            script {
-                // Change to the project directory
-                dir('C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\python') {
-                    // Create and activate virtual environment
-                    bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\python -m venv venv'
-                    bat 'call .\\venv\\Scripts\\activate && echo Virtual environment activated'
-            
-                    // Install dependencies
-                    bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\venv\\Scripts\\pip install -r C:\\Users\\bande\\OneDrive\\Desktop\\Dockers\\Projects\\demoWebApp\\requirements.txt'
-            
-                    // Run pytest using the full path to Python executable
-                    bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\venv\\Scripts\\pytest  C:\\Users\\bande\\OneDrive\\Desktop\\Dockers\\Projects\\demoWebApp\\tests'
+            steps {
+                script {
+                    // Store current workspace directory in projectPath variable
+                    def projectPath = pwd()
+
+                    // Change to the project directory
+                    dir(projectPath) {
+                        // Create and activate virtual environment
+                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\python -m venv venv'
+                        bat 'call .\\venv\\Scripts\\activate && echo Virtual environment activated'
+                
+                        // Install dependencies
+                        bat "C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\venv\\Scripts\\pip install -r ${projectPath}\\requirements.txt"
+                
+                        // Run pytest using the full path to Python executable
+                        bat "C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\venv\\Scripts\\pytest ${projectPath}\\tests"
+                    }
                 }
             }
         }
-    }
-
 
         stage('Deploy') {
             steps {
@@ -57,7 +59,7 @@ pipeline {
                 script {
                     // Run the Docker container
                     def container = docker.image("demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
-       
+   
                     // Wait for the application to be ready (adjust the log message)
                     container.waitForLog("Application started", 60)
                 }
