@@ -30,11 +30,12 @@ pipeline {
                     // Install dependencies
                     bat '.\\venv\\Scripts\\python -m pip install -r requirements.txt'
         
-                    // Run pytest
+                    // Run pytest using the full path to Python executable
                     bat '.\\venv\\Scripts\\python -m pytest tests'
                 }
             }
         }
+
 
         stage('Deploy') {
             steps {
