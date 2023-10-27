@@ -26,14 +26,14 @@ pipeline {
                     // Change to the project directory
                     dir('C:\\path\\to\\your\\project') {
                         // Create and activate virtual environment
-                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python3.12\\python.exe -m venv venv'
+                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\python -m venv venv'
                         bat 'call .\\venv\\Scripts\\activate && echo Virtual environment activated'
                 
                         // Install dependencies
-                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python3.12\\venv\\Scripts\\pip install -r requirements.txt'
+                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\venv\\Scripts\\pip install -r requirements.txt'
                 
                         // Run pytest using the full path to Python executable
-                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python3.12\\venv\\Scripts\\pytest tests'
+                        bat 'C:\\Users\\bande\\AppData\\Local\\Programs\\Python\\Python312\\venv\\Scripts\\pytest tests'
                     }
                 }
             }
