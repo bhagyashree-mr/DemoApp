@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     // Activate virtual environment and install dependencies
-                    bat 'python -m venv venv'
+                    //bat 'python -m venv venv'
                     bat '.\\venv\\Scripts\\activate && pip install -r requirements.txt'
 
                     // Run pytest
