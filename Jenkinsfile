@@ -66,10 +66,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deploy the Docker image (you may push it to a registry)
-                    docker.withRegistry('https://docker.io', 'dockerhub-login') {
+                    // Deploy the Docker image to Docker Hub
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-login') {
                         // Push the Docker image
-                        docker.image("demoapp").push()
+                        docker.image("bhagyashreemreddy/demoapp").push()
                     }
                 }
             }
@@ -79,16 +79,13 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container
-                    def container = docker.image("demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
+                    def container = docker.image("bhagyashreemreddy/demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
    
                     // Wait for the application to be ready (adjust the log message)
-                    container.waitForLog("Application started", 60)
+                    container.waitForLog("Your application-specific log message indicating that it has started", 60)
                 }
             }
         }
-    }
-
-
     }
 
     post {
