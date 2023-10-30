@@ -16,30 +16,25 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 script {
-                    def pyenvCloneDir = 'C:\\Program Files\\pyenv'
-                    def profilePath = "${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"
-        
                     // Check if pyenv directory exists
-                    if (!fileExists(pyenvCloneDir)) {
+                    if (!fileExists(PYENV_HOME)) {
                         // Clone pyenv repository
-                        bat "git clone https://github.com/pyenv-win/pyenv-win.git \"${pyenvCloneDir}\""
-                    } else {
-                        // Update existing clone
-                        dir(pyenvCloneDir) {
-                            bat 'git pull origin master'
-                        }
+                        bat 'git clone https://github.com/pyenv-win/pyenv-win.git "${PYENV_HOME}"'
+                    }
+                    
+                    // Ensure the PowerShell directory exists
+                    def powerShellDir = "${env.USERPROFILE}\\Documents\\WindowsPowerShell"
+                    if (!fileExists(powerShellDir)) {
+                        bat "mkdir ${powerShellDir}"
                     }
         
-                    // Create directories if they don't exist
-                    bat 'mkdir %USERPROFILE%\\Documents\\WindowsPowerShell'
-                    bat 'echo. > %USERPROFILE%\\Documents\\WindowsPowerShell\\profile.ps1'
-        
                     // Add pyenv to PATH
-                    bat "echo export PATH=\"${pyenvCloneDir}\\bin:$PATH\" >> ${profilePath}"
-                    bat "echo pyenv rehash --shim >> ${profilePath}"
+                    bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> ${powerShellDir}\\profile.ps1'
+                    bat 'echo pyenv rehash --shim >> ${powerShellDir}\\profile.ps1'
                 }
             }
         }
+
 
 
         stage('Build Docker Image') {
