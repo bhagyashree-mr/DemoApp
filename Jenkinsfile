@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     environment {
         PYENV_HOME = 'C:\\Program Files\\pyenv'
         PATH = "${PYENV_HOME}\\bin:${PATH}"
@@ -14,33 +14,20 @@ pipeline {
         }
 
         stage('Setup Python Environment') {
-    steps {
-        script {
-            def pyenvCloneDir = 'C:\\Program Files\\pyenv'
-            def profilePath = "${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"
-
-            // Check if pyenv directory exists
-            if (!fileExists(pyenvCloneDir)) {
-                // Clone pyenv repository
-                bat "git clone https://github.com/pyenv-win/pyenv-win.git \"${pyenvCloneDir}\""
-            } else {
-                // Update existing clone
-                dir(pyenvCloneDir) {
-                    bat 'git pull origin master'
+            steps {
+                script {
+                    // Check if pyenv directory exists
+                    if (!fileExists(PYENV_HOME)) {
+                        // Clone pyenv repository
+                        bat 'git clone https://github.com/pyenv-win/pyenv-win.git "${PYENV_HOME}"'
+                    }
+                    
+                    // Add pyenv to PATH
+                    bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> ${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1'
+                    bat 'echo pyenv rehash --shim >> ${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1'
                 }
             }
-
-            // Create directories if they don't exist
-            bat 'mkdir %USERPROFILE%\\Documents\\WindowsPowerShell'
-            bat 'echo. > %USERPROFILE%\\Documents\\WindowsPowerShell\\profile.ps1'
-
-            // Add pyenv to PATH
-            bat "echo export PATH=\"${pyenvCloneDir}\\bin:$PATH\" >> ${profilePath}"
-            bat "echo pyenv rehash --shim >> ${profilePath}"
         }
-    }
-}
-
 
         stage('Build Docker Image') {
             steps {
@@ -63,9 +50,6 @@ pipeline {
                     // Change to the project directory
                     dir(projectPath) {
                         // Ensure pyenv is available in the current session
-                        bat 'refreshenv'
-                
-                        // Activate pyenv
                         bat 'pyenv exec 3.12 python -m venv venv'
                         bat 'call .\\venv\\Scripts\\activate && echo Virtual environment activated'
                 
@@ -79,7 +63,31 @@ pipeline {
             }
         }
 
-        // Add other stages as needed...
+        stage('Deploy') {
+            steps {
+                script {
+                    // Deploy the Docker image (you may push it to a registry)
+                    docker.withRegistry('https://docker.io', 'dockerhub-login') {
+                        // Push the Docker image
+                        docker.image("demoapp").push()
+                    }
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    // Run the Docker container
+                    def container = docker.image("demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
+   
+                    // Wait for the application to be ready (adjust the log message)
+                    container.waitForLog("Application started", 60)
+                }
+            }
+        }
+    }
+
 
     }
 
