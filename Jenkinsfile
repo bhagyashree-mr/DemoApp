@@ -22,12 +22,11 @@ pipeline {
                 bat 'git clone https://github.com/pyenv-win/pyenv-win.git "${PYENV_HOME}"'
             }
 
-            // Create the directory for PowerShell profile using bat
-            bat 'mkdir "${env.USERPROFILE}\\Documents\\WindowsPowerShell"'
-
             // Add pyenv to PATH
-            bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> "${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"'
-            bat 'echo pyenv rehash --shim >> "${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"'
+            bat 'set PATH="${PYENV_HOME}\\bin;%PATH%"'
+
+            // Rehash
+            bat 'pyenv rehash --shim'
         }
     }
 }
