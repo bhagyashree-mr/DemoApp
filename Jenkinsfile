@@ -42,8 +42,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deploy the Docker image (you may push it to a registry)
-                    docker.withRegistry('https://your-docker-registry-url', 'dockerhub-login') {
+					withDockerRegistry(credentialsId: 'dockerhub-login')  {
                         // Push the Docker image
                         docker.image("demoapp").push()
                     }
@@ -51,7 +50,7 @@ pipeline {
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Run the Application') {
             steps {
                 script {
                     // Run the Docker container
