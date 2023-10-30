@@ -63,19 +63,22 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            echo 'Pipeline successful!'
-            emailext subject: 'Pipeline Successful',
-                      body: 'The pipeline has been successfully executed.',
-                      to: 'pdacse80@gmail.com' // Add your recipient email address
-        }
-
-        failure {
-            echo 'Pipeline failed!'
-            emailext subject: 'Pipeline Failed',
-                      body: 'The pipeline has failed. Please check the Jenkins console output for details.',
-                      to: 'pdacse80@gmail.com' // Add your recipient email address
-        }
+   post {
+    success {
+        echo 'Pipeline successful!'
+        emailext subject: 'Pipeline Successful',
+                  body: 'The pipeline has been successfully executed.',
+                  to: 'pdacse80@gmail.com', // Add your recipient email address
+                  attachLog: true
     }
+
+    failure {
+        echo 'Pipeline failed!'
+        emailext subject: 'Pipeline Failed',
+                  body: 'The pipeline has failed. Please check the Jenkins console output for details.',
+                  to: 'pdacse80@gmail.com', // Add your recipient email address
+                  attachLog: true
+    }
+ }
+
 }
