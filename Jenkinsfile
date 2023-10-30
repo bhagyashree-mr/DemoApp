@@ -28,18 +28,11 @@ pipeline {
         
                     // Change to the project directory
                     dir(projectPath) {
-                        // Ensure pyenv is available in the current session
-                        bat 'pyenv exec 3.12 python -m venv venv'
-                        bat 'call .\\venv\\Scripts\\activate && echo Virtual environment activated'
-                        
                         // Install dependencies
-                        bat "pyenv exec 3.12 pip install -r ${projectPath}\\requirements.txt"
-                        
-                        // Install pytest
-                        bat "pyenv exec 3.12 pip install pytest"
-        
+                        bat "pip install -r ${projectPath}\\requirements.txt"
+                
                         // Run pytest
-                        bat "pyenv exec 3.12 pytest ${projectPath}\\tests"
+                        bat "python -m pytest ${projectPath}\\tests"
                     }
                 }
             }
