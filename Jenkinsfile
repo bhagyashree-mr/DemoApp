@@ -68,7 +68,7 @@ pipeline {
         echo 'Pipeline successful!'
         emailext subject: 'Pipeline Successful',
                   body: 'The pipeline has been successfully executed.',
-                  to: 'pdacse80@gmail.com', // Add your recipient email address
+                  to: 'drishtichauhan151.com', // Add your recipient email address
                   attachLog: true
     }
 
