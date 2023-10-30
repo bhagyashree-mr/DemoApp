@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image
-                    def dockerImage = docker.build("demoapp", "--network=host .")
+                    def dockerImage = docker.build("bhagyashreemreddy/demoapp", "--network=host .")
             
                     // Tag the Docker image
                     dockerImage.tag("latest")
@@ -44,7 +44,7 @@ pipeline {
                 script {
 					withDockerRegistry(credentialsId: 'dockerhub-login')  {
                         // Push the Docker image
-                        docker.image("demoapp").push()
+                        docker.image("bhagyashreemreddy/demoapp").push()
                     }
                 }
             }
@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container
-                    def container = docker.image("demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
+                    def container = docker.image("bhagyashreemreddy/demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
    
                     // Wait for the application to be ready (adjust the log message)
                     container.waitForLog("Your application-specific log message indicating that it has started", 60)
