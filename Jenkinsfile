@@ -16,8 +16,11 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 script {
-                    // Install pyenv
-                    bat 'git clone https://github.com/pyenv-win/pyenv-win.git ${PYENV_HOME}'
+                    // Check if pyenv directory exists
+                    if (!fileExists(PYENV_HOME)) {
+                        // Clone pyenv repository
+                        bat 'git clone https://github.com/pyenv-win/pyenv-win.git ${PYENV_HOME}'
+                    }
                     
                     // Add pyenv to PATH
                     bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> %USERPROFILE%\\Documents\\WindowsPowerShell\\profile.ps1'
