@@ -21,20 +21,21 @@ pipeline {
                     // Check if pyenv directory exists
                     if (!fileExists(pyenvCloneDir)) {
                         // Clone pyenv repository
-                        bat "git clone https://github.com/pyenv-win/pyenv-win.git ${pyenvCloneDir}"
+                        bat "git clone https://github.com/pyenv-win/pyenv-win.git \"${pyenvCloneDir}\""
                     } else {
                         // Update existing clone
                         dir(pyenvCloneDir) {
                             bat 'git pull origin master'
                         }
                     }
-
+        
                     // Add pyenv to PATH
                     bat "echo export PATH=\"${pyenvCloneDir}\\bin:$PATH\" >> ${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"
                     bat "echo pyenv rehash --shim >> ${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"
                 }
             }
         }
+
 
         stage('Build Docker Image') {
             steps {
