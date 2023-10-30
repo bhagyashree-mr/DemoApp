@@ -13,22 +13,29 @@ pipeline {
             }
         }
 
-        stage('Setup Python Environment') {
+       stage('Setup Python Environment') {
             steps {
                 script {
-                    // Check if the directory exists before creating it
+                    // Define the directory path
                     def powerShellDir = "${env.USERPROFILE}\\Documents\\WindowsPowerShell"
+        
+                    // Create the directory if it doesn't exist
                     if (!fileExists(powerShellDir)) {
-                        // Create the directory
                         bat "mkdir ${powerShellDir}"
                     }
         
-                    // Add pyenv to PATH
-                    bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> ${powerShellDir}\\profile.ps1'
-                    bat 'echo pyenv rehash --shim >> ${powerShellDir}\\profile.ps1'
+                    // Check again if the directory exists
+                    if (fileExists(powerShellDir)) {
+                        // Add pyenv to PATH
+                        bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> ${powerShellDir}\\profile.ps1'
+                        bat 'echo pyenv rehash --shim >> ${powerShellDir}\\profile.ps1'
+                    } else {
+                        error "Failed to create directory: ${powerShellDir}"
+                    }
                 }
             }
         }
+
 
 
         stage('Run Tests') {
