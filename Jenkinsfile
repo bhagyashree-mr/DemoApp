@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container
-                    def container = docker.image("bhagyashreemreddy/demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
+                    def container = docker.image("bhagyashreemreddy/demoapp:latest").run("-p 5000:5000 --rm -d --name DemoAppContainer")
    
                     // Wait for the application to be ready (adjust the log message)
                     container.waitForLog("Your application-specific log message indicating that it has started", 60)
