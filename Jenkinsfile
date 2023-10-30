@@ -14,23 +14,24 @@ pipeline {
         }
 
        stage('Setup Python Environment') {
-            steps {
-                script {
-                    // Check if pyenv directory exists
-                    if (!fileExists(PYENV_HOME)) {
-                        // Clone pyenv repository
-                        bat 'git clone https://github.com/pyenv-win/pyenv-win.git "${PYENV_HOME}"'
-                    }
-        
-                    // Create the directory for PowerShell profile
-                    mkdir "${env.USERPROFILE}\\Documents\\WindowsPowerShell"
-        
-                    // Add pyenv to PATH
-                    bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> "${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"'
-                    bat 'echo pyenv rehash --shim >> "${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"'
-                }
+    steps {
+        script {
+            // Check if pyenv directory exists
+            if (!fileExists(PYENV_HOME)) {
+                // Clone pyenv repository
+                bat 'git clone https://github.com/pyenv-win/pyenv-win.git "${PYENV_HOME}"'
             }
+
+            // Create the directory for PowerShell profile using bat
+            bat 'mkdir "${env.USERPROFILE}\\Documents\\WindowsPowerShell"'
+
+            // Add pyenv to PATH
+            bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> "${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"'
+            bat 'echo pyenv rehash --shim >> "${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"'
         }
+    }
+}
+
 
 
 
