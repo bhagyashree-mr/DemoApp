@@ -19,7 +19,7 @@
 #     assert b'I am good, how about you?' in response.data
 
 # tests/test_app.py
-from DEMOWEBAPP.app.app import app  # Assuming your Flask app is defined in app.py
+from app.app import app  # Assuming your Flask app is defined in app.py
 
 import pytest
 
