@@ -16,15 +16,22 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 script {
-                    // Check if pyenv directory exists
-                    if (!fileExists(PYENV_HOME)) {
-                        // Clone pyenv repository
-                        bat 'git clone https://github.com/pyenv-win/pyenv-win.git ${PYENV_HOME}'
-                    }
+                    def pyenvCloneDir = 'C:\\Program Files\\pyenv'
                     
+                    // Check if pyenv directory exists
+                    if (!fileExists(pyenvCloneDir)) {
+                        // Clone pyenv repository
+                        bat "git clone https://github.com/pyenv-win/pyenv-win.git ${pyenvCloneDir}"
+                    } else {
+                        // Update existing clone
+                        dir(pyenvCloneDir) {
+                            bat 'git pull origin master'
+                        }
+                    }
+
                     // Add pyenv to PATH
-                    bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> %USERPROFILE%\\Documents\\WindowsPowerShell\\profile.ps1'
-                    bat 'echo pyenv rehash --shim >> %USERPROFILE%\\Documents\\WindowsPowerShell\\profile.ps1'
+                    bat "echo export PATH=\"${pyenvCloneDir}\\bin:$PATH\" >> ${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"
+                    bat "echo pyenv rehash --shim >> ${env.USERPROFILE}\\Documents\\WindowsPowerShell\\profile.ps1"
                 }
             }
         }
@@ -66,7 +73,7 @@ pipeline {
             }
         }
 
-        // Remaining stages...
+        // Add other stages as needed...
 
     }
 
