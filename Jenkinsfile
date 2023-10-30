@@ -20,11 +20,8 @@ pipeline {
                     bat 'git clone https://github.com/pyenv-win/pyenv-win.git ${PYENV_HOME}'
                     
                     // Add pyenv to PATH
-                    bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> $PROFILE'
-                    bat 'echo pyenv rehash --shim >> $PROFILE'
-                    
-                    // Initialize pyenv
-                    bat 'pyenv --version'
+                    bat 'echo export PATH="${PYENV_HOME}\\bin:$PATH" >> %USERPROFILE%\\Documents\\WindowsPowerShell\\profile.ps1'
+                    bat 'echo pyenv rehash --shim >> %USERPROFILE%\\Documents\\WindowsPowerShell\\profile.ps1'
                 }
             }
         }
@@ -49,6 +46,9 @@ pipeline {
 
                     // Change to the project directory
                     dir(projectPath) {
+                        // Ensure pyenv is available in the current session
+                        bat 'refreshenv'
+                
                         // Activate pyenv
                         bat 'pyenv exec 3.12 python -m venv venv'
                         bat 'call .\\venv\\Scripts\\activate && echo Virtual environment activated'
@@ -63,29 +63,8 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                script {
-                    // Deploy the Docker image (you may push it to a registry)
-                    docker.withRegistry('https://docker.io', 'dockerhub-login') {
-                        // Push the Docker image
-                        docker.image("demoapp").push()
-                    }
-                }
-            }
-        }
+        // Remaining stages...
 
-        stage('Run Docker Container') {
-            steps {
-                script {
-                    // Run the Docker container
-                    def container = docker.image("demoapp:latest").run("-p 8080:8080 --rm -d --name DemoAppContainer")
-   
-                    // Wait for the application to be ready (adjust the log message)
-                    container.waitForLog("Application started", 60)
-                }
-            }
-        }
     }
 
     post {
