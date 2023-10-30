@@ -29,14 +29,15 @@ pipeline {
                     // Change to the project directory
                     dir(projectPath) {
                         // Install dependencies
-                        bat "pip install -r ${projectPath}\\requirements.txt"
+                        bat "${projectPath}\\venv\\Scripts\\pip install -r ${projectPath}\\requirements.txt"
                 
                         // Run pytest
-                        bat "python -m pytest ${projectPath}\\tests"
+                        bat "${projectPath}\\venv\\Scripts\\python -m pytest ${projectPath}\\tests"
                     }
                 }
             }
         }
+
 
         stage('Deploy') {
             steps {
