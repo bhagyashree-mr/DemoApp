@@ -53,6 +53,8 @@ pipeline {
         stage('Run the Application') {
             steps {
                 script {
+		    // Pull the Docker image
+           	     docker.image("bhagyashreemreddy/demoapp:latest").pull()
                     // Run the Docker container
                     def container = docker.image("bhagyashreemreddy/demoapp:latest").run("-p 5000:5000 --rm --name demoapp_container")
    
