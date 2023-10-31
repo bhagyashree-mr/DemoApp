@@ -57,7 +57,7 @@ pipeline {
                     def container = docker.image("bhagyashreemreddy/demoapp:latest").run("-p 5000:5000 --rm -d --name demoapp_container")
    
                     // Wait for the application to be ready (adjust the log message)
-                    //container.waitForLog("Your application-specific log message indicating that it has started", 60)
+                    container.waitForLog("Your application-specific log message indicating that it has started", 60)
                 }
             }
         }
