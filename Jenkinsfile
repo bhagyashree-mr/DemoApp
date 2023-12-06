@@ -13,7 +13,7 @@ pipeline {
                 script {
                     // Build the Docker image
                     def dockerImage = docker.build("bhagyashreemreddy/demoapp", "--network=host .")
-            
+
                     // Tag the Docker image
                     dockerImage.tag("latest")
                 }
@@ -23,26 +23,22 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Store current workspace directory in projectPath variable
-                    def projectPath = pwd()
-        
-                    // Change to the project directory
-                    dir(projectPath) {
-                        // Install dependencies
-                        bat "${projectPath}\\venv\\Scripts\\pip install -r ${projectPath}\\requirements.txt"
-                
-                        // Run pytest
-                        bat "${projectPath}\\venv\\Scripts\\python -m pytest ${projectPath}\\tests"
+                    // Run tests using a platform-independent approach
+                    if (isUnix()) {
+                        sh 'python -m pip install -r requirements.txt'
+                        sh 'python -m pytest tests'
+                    } else {
+                        bat 'python -m pip install -r requirements.txt'
+                        bat 'python -m pytest tests'
                     }
                 }
             }
         }
 
-
         stage('Deploy') {
             steps {
                 script {
-					withDockerRegistry(credentialsId: 'dockerhub-login')  {
+                    withDockerRegistry(credentialsId: 'dockerhub-login') {
                         // Push the Docker image
                         docker.image("bhagyashreemreddy/demoapp").push()
                     }
@@ -53,11 +49,10 @@ pipeline {
         stage('Run the Application') {
             steps {
                 script {
-		    // Pull the Docker image
-           	     docker.image("bhagyashreemreddy/demoapp:latest").pull()
+                    // Pull the Docker image
+                    docker.image("bhagyashreemreddy/demoapp:latest").pull()
                     // Run the Docker container
                     def container = docker.image("bhagyashreemreddy/demoapp:latest").run("-p 8025:8025 --rm --name demoapp_container")
-   
                     // Wait for the application to be ready (adjust the log message)
                     //container.waitForLog("Your application-specific log message indicating that it has started", 60)
                 }
@@ -65,22 +60,21 @@ pipeline {
         }
     }
 
-   post {
-    success {
-        echo 'Pipeline successful!'
-        emailext subject: 'Pipeline Successful',
-                  body: 'The pipeline has been successfully executed.',
-                  to: 'bandebhagyashree@gmail.com', // Add your recipient email address
-                  attachLog: true
-    }
+    post {
+        success {
+            echo 'Pipeline successful!'
+            emailext subject: 'Pipeline Successful',
+                      body: 'The pipeline has been successfully executed.',
+                      to: 'bandebhagyashree@gmail.com', // Add your recipient email address
+                      attachLog: true
+        }
 
-    failure {
-        echo 'Pipeline failed!'
-        emailext subject: 'Pipeline Failed',
-                  body: 'The pipeline has failed. Please check the Jenkins console output for details.',
-                  to: 'pdacse80@gmail.com', // Add your recipient email address
-                  attachLog: true
+        failure {
+            echo 'Pipeline failed!'
+            emailext subject: 'Pipeline Failed',
+                      body: 'The pipeline has failed. Please check the Jenkins console output for details.',
+                      to: 'pdacse80@gmail.com', // Add your recipient email address
+                      attachLog: true
+        }
     }
- }
-
 }
